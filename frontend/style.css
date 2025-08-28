@@ -1,0 +1,356 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* This makes layout calculations easier */
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Professional-looking sans-serif font */
+    line-height: 1.6; /* Improves readability of text */
+    background-color: #f7f9fc; /* A very light, clean background color */
+    color: #333; /* Dark gray for main text for good contrast */
+    min-height: 100vh; /* Ensures body takes at least full viewport height */
+    display: flex; /* Use flexbox for overall page layout */
+    flex-direction: column; /* Stacks header, main, footer vertically */
+}
+
+/* Basic styling for links to make them look clickable */
+a {
+    color: #4A90E2; /* A pleasant blue for links */
+    text-decoration: none; /* Removes underline by default */
+}
+
+a:hover {
+    text-decoration: underline; /* Underline on hover for interactivity */
+}
+
+/* Common container for main content */
+.container {
+    max-width: 1200px; /* Limits content width for readability on large screens */
+    margin: 0 auto; /* Centers the container horizontally */
+    padding: 20px; /* Adds space around content inside the container */
+}
+
+/* Button Styling */
+.button {
+    display: inline-block; /* Allows padding and margin, but respects text flow */
+    padding: 10px 20px;
+    background-color: #4A90E2; /* Primary blue button */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.button:hover {
+    background-color: #357ABD; /* Slightly darker blue on hover */
+}
+
+.button.secondary {
+    background-color: #6c757d; /* Grey button for secondary actions */
+}
+
+.button.secondary:hover {
+    background-color: #5a6268;
+}
+
+/* Header/Footer basic styling - will be refined */
+header, footer {
+    background-color: #4A90E2;
+    color: white;
+    padding: 15px 0;
+    text-align: center;
+}
+
+main {
+    flex-grow: 1; /* Allows main content area to take up available vertical space */
+    padding: 20px 0;
+}
+
+.navbar {
+    display: flex; /* Use Flexbox to align items horizontally */
+    justify-content: space-between; /* Puts brand on left, nav items on right */
+    align-items: center; /* Vertically centers items */
+    padding: 10px 20px;
+    background-color: #4A90E2; /* Same as header background */
+    color: white;
+}
+
+.navbar-brand {
+    font-size: 1.8em; /* Larger font for the brand name */
+    font-weight: bold;
+    color: white; /* White color for the brand link */
+}
+
+.navbar-nav {
+    list-style: none; /* Removes bullet points from the list */
+    display: flex; /* Arranges nav items horizontally */
+    gap: 15px; /* Adds space between nav items */
+    align-items: center; /* Vertically centers items in the nav */
+}
+
+.navbar-nav .nav-link {
+    color: white; /* White color for nav links */
+    padding: 8px 12px;
+    transition: background-color 0.3s ease; /* Smooth transition for hover */
+    border-radius: 5px; /* Slightly rounded corners */
+}
+
+.navbar-nav .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1); /* Subtle background on hover */
+    text-decoration: none; /* No underline on hover for nav links */
+}
+
+/* Hero Section Styling */
+.hero {
+    text-align: center; /* Centers text content */
+    padding: 80px 20px; /* Generous padding for a prominent look */
+    background-color: white;
+    margin-bottom: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08); /* Subtle shadow */
+}
+
+.hero h1 {
+    font-size: 3em; /* Large heading */
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.hero p {
+    font-size: 1.2em; /* Readable paragraph text */
+    margin-bottom: 30px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    color: #555;
+}
+
+.hero-actions {
+    display: flex; /* Arranges buttons horizontally */
+    justify-content: center; /* Centers buttons */
+    gap: 20px; /* Space between buttons */
+}
+
+/* Features Section Styling */
+.features {
+    padding: 50px 20px;
+    background-color: #e9ecef; /* Light grey background */
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.features h2 {
+    text-align: center;
+    font-size: 2.5em;
+    margin-bottom: 40px;
+    color: #333;
+}
+
+.feature-grid {
+    display: grid; /* Use CSS Grid for a responsive grid layout */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Auto-fitting columns */
+    gap: 30px; /* Space between grid items */
+}
+
+.feature-item {
+    background-color: white;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    text-align: center;
+    transition: transform 0.3s ease; /* Smooth hover effect */
+}
+
+.feature-item:hover {
+    transform: translateY(-5px); /* Lift effect on hover */
+}
+
+.feature-item h3 {
+    font-size: 1.5em;
+    margin-bottom: 15px;
+    color: #4A90E2;
+}
+
+.feature-item p {
+    color: #666;
+}
+
+/* Footer Specific Styling */
+footer {
+    margin-top: auto; /* Pushes footer to the bottom of the flex column */
+    background-color: #333; /* Darker footer for contrast */
+    color: #ccc;
+    font-size: 0.9em;
+    padding: 20px 0;
+}
+
+footer .container {
+    padding: 0 20px; /* Adjust padding for footer content */
+}
+
+/* Responsive Design for smaller screens */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column; /* Stack navbar items vertically */
+        align-items: flex-start; /* Align to the left */
+        padding: 15px 20px;
+    }
+
+    .navbar-brand {
+        margin-bottom: 10px; /* Space below brand when stacked */
+    }
+
+    .navbar-nav {
+        flex-direction: column; /* Stack nav links vertically */
+        width: 100%; /* Take full width */
+        gap: 5px; /* Smaller gap */
+        align-items: flex-start; /* Align links to the left */
+    }
+
+    .navbar-nav li {
+        width: 100%; /* Make each nav item take full width */
+    }
+
+    .navbar-nav .nav-link,
+    .navbar-nav .button {
+        display: block; /* Make links/buttons block-level */
+        width: 100%;
+        text-align: left;
+        padding: 10px 15px;
+        border-radius: 0; /* No border radius when stacked */
+    }
+
+    .navbar-nav .button {
+        margin-top: 5px; /* Small margin for stacked buttons */
+    }
+
+    .hero {
+        padding: 60px 15px;
+    }
+
+    .hero h1 {
+        font-size: 2.2em;
+    }
+
+    .hero p {
+        font-size: 1em;
+    }
+
+    .hero-actions {
+        flex-direction: column; /* Stack hero buttons vertically */
+        gap: 15px;
+    }
+
+    .features {
+        padding: 40px 15px;
+    }
+
+    .features h2 {
+        font-size: 2em;
+    }
+}
+
+.hero-image {
+    max-width: 100%; /* Ensure image doesn't overflow */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: 8px; /* Slightly rounded corners for the image */
+    margin: 30px auto; /* Centered with vertical spacing */
+    display: block; /* Ensures margin auto works for centering */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* Subtle shadow */
+}
+
+/* Contact Section Styling */
+.contact {
+    padding: 50px 20px;
+    background-color: white;
+    margin-top: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    text-align: center; /* Center intro text and email info */
+}
+
+.contact h2 {
+    font-size: 2.5em;
+    margin-bottom: 30px;
+    color: #333;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+    display: inline-block; /* Makes border-bottom fit text */
+}
+
+.contact-intro {
+    font-size: 1.1em;
+    margin-bottom: 25px;
+    color: #555;
+}
+
+.contact-form {
+    max-width: 600px; /* Limit form width for better readability */
+    margin: 0 auto 30px auto; /* Center form and add bottom margin */
+    text-align: left; /* Align form labels/inputs to the left */
+    padding: 25px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fcfcfc;
+}
+
+.form-group {
+    margin-bottom: 15px; /* Space between form fields */
+}
+
+.form-group label {
+    display: block; /* Makes label appear above input */
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #444;
+}
+
+.contact-form input[type="text"],
+.contact-form input[type="email"],
+.contact-form textarea {
+    width: 100%; /* Inputs take full width of their container */
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+    box-sizing: border-box; /* Include padding in width calculation */
+}
+
+.contact-form textarea {
+    resize: vertical; /* Allow vertical resizing only */
+    min-height: 100px;
+}
+
+.contact-form button[type="submit"] {
+    width: auto; /* Button doesn't take full width */
+    padding: 12px 30px;
+    margin-top: 10px;
+    font-size: 1.1em;
+}
+
+.contact-email-info {
+    margin-top: 20px;
+    font-size: 1em;
+    color: #666;
+}
+
+.contact-email-info a {
+    font-weight: bold;
+}
+
+
+/* Adjustments for responsiveness on smaller screens */
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 2em; /* Slightly smaller for mobile */
+    }
+    .hero p {
+        font-size: 0.9em;
+    }
+    .features h2, .contact h2 {
+        font-size: 2em;
+    }
+}
