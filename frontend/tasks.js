@@ -166,9 +166,11 @@ function closeModal(modal) {
 
 /* Show the "Add Task" modal; pass parentId to create as subtask */
 function showAddTaskModal(parentId = null) {
-  addTaskForm.reset();
-  addTaskParentHidden.value = parentId ? String(parentId) : ''; // '' => parent task
-  openModal(addTaskModal);
+    addTaskModal.style.display = 'flex';
+    addTaskFeedback.textContent = '';
+    addTaskForm.reset();
+    newTaskParentHidden.value = parentId || ''; // Set the hidden parent field
+    addTaskModal.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 /* Ensure Edit Modal has the form fields (your tasks.html didn’t include them).
@@ -297,10 +299,19 @@ function createTaskCard(task, depth=0) {
 }
 
 function renderTaskCards(tasks, container, depth=0) {
-  tasks.forEach(task => {
-    const card = createTaskCard(task, depth);
-    container.appendChild(card);
-  });
+    tasks.forEach(task => {
+        const card = createTaskCard(task, depth);
+        container.appendChild(card);
+        
+        // Create wrapper for subtasks if this task has subtasks
+        if (task.has_subtasks) {
+            const wrapper = document.createElement('div');
+            wrapper.id = `subtasks-wrapper-${task.id}`;
+            wrapper.className = `subtasks-wrapper depth-${depth}`;
+            wrapper.style.display = 'none';
+            card.after(wrapper);
+        }
+    });
 }
 
 /* -------------------- Fetch & UI -------------------- */
