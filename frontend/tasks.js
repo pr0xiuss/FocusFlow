@@ -166,10 +166,37 @@ function closeModal(modal) {
 
 /* Show the "Add Task" modal; pass parentId to create as subtask */
 function showAddTaskModal(parentId = null) {
+    console.log('=== showAddTaskModal DEBUG ===');
+    
+    // Check each DOM element individually
+    console.log('addTaskModal:', addTaskModal);
+    console.log('addTaskParentHidden:', addTaskParentHidden);
+    console.log('addTaskFeedback:', addTaskFeedback);
+    console.log('addTaskForm:', addTaskForm);
+    
+    // Make sure we have the DOM elements
+    if (!addTaskModal || !addTaskParentHidden || !addTaskFeedback) {
+        console.error('Missing DOM elements!');
+        console.error('addTaskModal missing:', !addTaskModal);
+        console.error('addTaskParentHidden missing:', !addTaskParentHidden);
+        console.error('addTaskFeedback missing:', !addTaskFeedback);
+        console.error('addTaskForm missing:', !addTaskForm);
+        return;
+    }
+    
     addTaskModal.style.display = 'flex';
     addTaskFeedback.textContent = '';
+    
+    console.log('🔍 Hidden field before reset:', addTaskParentHidden.value);
+    
     addTaskForm.reset();
-    newTaskParentHidden.value = parentId || ''; // Set the hidden parent field
+    
+    console.log('🔍 Hidden field after reset:', addTaskParentHidden.value);
+    
+    // Set the parent ID
+    addTaskParentHidden.value = parentId || '';
+    console.log('🔍 Hidden field after setting:', addTaskParentHidden.value);
+    
     addTaskModal.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
@@ -298,18 +325,21 @@ function createTaskCard(task, depth=0) {
   return card;
 }
 
-function renderTaskCards(tasks, container, depth=0) {
+function renderTaskCards(tasks, container, depth = 0) {
     tasks.forEach(task => {
         const card = createTaskCard(task, depth);
         container.appendChild(card);
         
         // Create wrapper for subtasks if this task has subtasks
-        if (task.has_subtasks) {
+        if (task.subtasks && task.subtasks.length > 0) {
             const wrapper = document.createElement('div');
             wrapper.id = `subtasks-wrapper-${task.id}`;
             wrapper.className = `subtasks-wrapper depth-${depth}`;
             wrapper.style.display = 'none';
             card.after(wrapper);
+            
+            // Pre-render nested subtasks (optional - you can also load on demand)
+            // renderTaskCards(task.subtasks, wrapper, depth + 1);
         }
     });
 }
@@ -352,46 +382,54 @@ async function onTasksGridClick(e) {
   const toggleBtn = e.target.closest('.task-toggle');
   if (toggleBtn) {
     const taskId = toggleBtn.dataset.taskId;
-    const wrap = qs(`#subtasks-wrapper-${taskId}`);
-    if (!wrap) return;
-
+    const parentCard = document.getElementById(`task-card-${taskId}`);
+    const subtasksWrapper = document.getElementById(`subtasks-wrapper-${taskId}`);
+    
+    if (!parentCard || !subtasksWrapper) return;
+    
     if (toggleBtn.classList.contains('expanded')) {
-      wrap.style.display = 'none';
-      wrap.innerHTML = '';
-      toggleBtn.classList.remove('expanded');
-      toggleBtn.textContent = '▶';
-      return;
+        // Collapse
+        subtasksWrapper.style.display = 'none';
+        subtasksWrapper.innerHTML = '';
+        toggleBtn.classList.remove('expanded');
+        toggleBtn.textContent = '▶';
+        return;
     }
-    // expand
+    
+    // Expand - the API now returns nested subtasks
     toggleBtn.classList.add('expanded');
     toggleBtn.textContent = '▼';
-    wrap.style.display = 'block';
+    subtasksWrapper.style.display = 'block';
+    
     try {
-      const subtasks = await apiGetSubtasks(taskId);
-      wrap.innerHTML = '';
-      if (subtasks.length) {
-        const subContainer = document.createElement('div');
-        subContainer.className = 'subtask-container';
-        wrap.appendChild(subContainer);
-        const parentDepth = Number((qs(`#task-card-${taskId}`)?.dataset.depth) || 0);
-        renderTaskCards(subtasks, subContainer, parentDepth + 1);
-      } else {
-        wrap.innerHTML = '<p class="no-subtasks-message">No subtasks.</p>';
-      }
+        const subtasks = await apiGetSubtasks(taskId);
+        subtasksWrapper.innerHTML = '';
+        
+        if (subtasks.length) {
+            const subContainer = document.createElement('div');
+            subContainer.className = 'subtask-container';
+            subtasksWrapper.appendChild(subContainer);
+            renderTaskCards(subtasks, subContainer, Number(parentCard.dataset.depth) + 1);
+        } else {
+            subtasksWrapper.innerHTML = '<p class="no-subtasks-message">No subtasks.</p>';
+        }
     } catch (err) {
-      wrap.innerHTML = `<p class="feedback-message" style="color:#dc3545;">Failed to load subtasks.</p>`;
-      console.error(err);
+        console.error('Error loading subtasks:', err);
+        subtasksWrapper.innerHTML = `<p class="feedback-message" style="color:#dc3545;">Failed to load subtasks.</p>`;
     }
     return;
-  }
+}
 
   // add subtask
-  const addSubBtn = e.target.closest('.add-subtask-button');
-  if (addSubBtn) {
+const addSubBtn = e.target.closest('.add-subtask-button');
+if (addSubBtn) {
     const parentId = addSubBtn.dataset.parentId;
+    console.log('🔍 Add subtask clicked - Parent ID from button:', parentId);
+    console.log('🔍 Button element:', addSubBtn);
+    console.log('🔍 Button dataset:', addSubBtn.dataset);
     showAddTaskModal(parentId);
     return;
-  }
+}
 
   // toggle complete
   const completeBtn = e.target.closest('.complete-toggle-button');
@@ -543,6 +581,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // add modal & form
   addTaskModal        = qs('#add-task-modal');
   addTaskForm         = qs('#add-task-form');
+  addTaskFeedback = qs('#add-task-feedback');
   addTaskParentHidden = qs('#add-task-parent-id');
   addTitle            = qs('#new-task-title');
   addDesc             = qs('#new-task-description');
@@ -630,4 +669,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   // initial load
   fetchAndDisplayStats();
   fetchAndRenderTasks();
+
+  console.log('DOM References check:');
+console.log('addTaskModal:', addTaskModal);
+console.log('addTaskForm:', addTaskForm);
+console.log('addTaskParentHidden:', addTaskParentHidden);
+console.log('addTaskFeedback:', addTaskFeedback);
 });

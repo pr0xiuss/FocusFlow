@@ -13,6 +13,22 @@ class TaskViewSet(viewsets.ModelViewSet):
     serializer_class = TaskSerializer
     permission_classes = [IsAuthenticated]
 
+    def get_nested_subtasks(self,task,user):
+        subtasks=task.subtasks.filter(user=user).order_by('id')
+        result=[]
+
+        for subtask in subtasks:
+            subtask_data=TaskSerializer(subtask).data
+            has_nested=subtask.subtasks.filter(user=user).exists()
+            subtask_data['has_subtasks']=has_nested
+
+            if has_nested:
+                subtask_data['subtasks']=self.get_nested_subtasks(subtask,user)
+            else:
+                subtask_data['subtasks']=[]
+        
+        return result
+
     def get_queryset(self):
         queryset = Task.objects.filter(user=self.request.user)
         parent_param = self.request.query_params.get('parent_task', None)
