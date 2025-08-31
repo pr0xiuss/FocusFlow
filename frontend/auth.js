@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const authContent = document.querySelector('.auth-content');
     let feedbackMessage = document.createElement('p');
     feedbackMessage.className = 'feedback-message'; // For basic styling
-    // Insert it just below the intro text, or at a suitable place
     if (authContent) {
         const introText = authContent.querySelector('.auth-intro-text');
         if (introText) {
@@ -21,27 +20,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Function to Display Feedback Messages ---
     function displayFeedback(message, type = 'error') {
-        // 'type' can be 'success' or 'error' to change styling
         feedbackMessage.textContent = message;
-        feedbackMessage.style.color = type === 'success' ? '#28a745' : '#dc3545'; // Green for success, red for error
+        feedbackMessage.style.color = type === 'success' ? '#28a745' : '#dc3545';
         feedbackMessage.style.marginTop = '15px';
         feedbackMessage.style.marginBottom = '15px';
         feedbackMessage.style.fontWeight = 'bold';
-        feedbackMessage.style.visibility = 'visible'; // Make it visible
-
-        // Optional: Hide after some time
-        // setTimeout(() => {
-        //     feedbackMessage.textContent = '';
-        //     feedbackMessage.style.visibility = 'hidden';
-        // }, 5000);
+        feedbackMessage.style.visibility = 'visible';
     }
 
     // --- Function to Handle SIGNUP Form Submission ---
 if (signupForm) {
-        signupForm.addEventListener('submit', async (e) => { // Keep async as we use await
-            console.log('1. Signup form submission event fired!'); // DEBUG LOG
-            e.preventDefault(); // This *must* be the first executable line.
-            console.log('2. Default form submission prevented.'); // DEBUG LOG
+        signupForm.addEventListener('submit', async (e) => { 
+            console.log('1. Signup form submission event fired!');
+            e.preventDefault(); //should befirst executable line.
+            console.log('2. Default form submission prevented.'); 
 
             // Clear previous feedback
             feedbackMessage.textContent = '';
@@ -55,10 +47,10 @@ if (signupForm) {
             // 2. Client-side validation
             if (pwd !== pwd2) {
                 displayFeedback('Passwords do not match.', 'error');
-                console.log('3. Client-side validation failed: Passwords mismatch.'); // DEBUG LOG
+                console.log('3. Client-side validation failed: Passwords mismatch.');
                 return; // Stop execution
             }
-            console.log('4. Client-side validation passed.'); // DEBUG LOG
+            console.log('4. Client-side validation passed.');
 
             // 3. Prepare data for the backend
             const userData = {
@@ -83,6 +75,7 @@ if (signupForm) {
                 if (response.ok) { // HTTP status 200-299
                     const data = await response.json();
                     console.log('6. Registration successful (Backend response):', data); // DEBUG LOG
+                    localStorage.setItem('username', username);
                     displayFeedback('Registration successful! Redirecting to login...', 'success'); // UPDATED MSG
                     signupForm.reset(); // Clear the form
 
@@ -150,6 +143,7 @@ if (signupForm) {
                     // Store JWT tokens securely
                     // For a college project, localStorage is acceptable for simplicity.
                     // In production, for refresh tokens, HttpOnly cookies are generally preferred for better XSS protection.
+                    localStorage.setItem('username', username);
                     localStorage.setItem('accessToken', data.access);
                     localStorage.setItem('refreshToken', data.refresh);
 
