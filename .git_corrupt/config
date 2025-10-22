@@ -1,0 +1,19 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+[remote "origin"]
+	url = https://github.com/pr0xiuss/FocusFlow.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[branch "main"]
+	remote = origin
+	merge = refs/heads/main
+	vscode-merge-base = origin/pr0xius
+[branch "pr0xius"]
+	remote = origin
+	merge = refs/heads/pr0xius
+[branch "root"]
+	vscode-merge-base = origin/pr0xius
+	remote = origin
+	merge = refs/heads/root
