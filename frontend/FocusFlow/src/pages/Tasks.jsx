@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "../styles/style.css";
 import "../styles/tasks.css";
+import Navbar from "../components/Navbar";
 
 /* === BASE API === */
 const API_BASE_URL = "http://127.0.0.1:8000/api";
@@ -813,50 +814,12 @@ export default function Tasks() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      {/* NAVBAR */}
-      <header>
-        <nav className="navbar">
-          <div className="container navbar-content">
-            <span className="navbar-brand">FocusFlow</span>
-            <ul className="navbar-nav">
-              <li className="nav-item nav-search-add">
-                <input
-                  type="text"
-                  id="global-search-tasks"
-                  placeholder="Search tasks..."
-                  className="navbar-search-input"
-                  value={filters.search}
-                  onChange={(e) => setFilters((prev) => ({ ...prev, search: e.target.value }))}
-                  onKeyPress={handleSearchKeyPress}
-                />
-              </li>
-              <li className="nav-item">
-                <button
-                  id="show-add-task-form-button"
-                  className="button navbar-add-button"
-                  onClick={() => handleOpenAddModal(null)}
-                >
-                  Add Task
-                </button>
-              </li>
-              <li className="nav-item">
-                <span
-                  id="user-greeting"
-                  className="nav-link"
-                  style={{ color: "white", cursor: "default" }}
-                >
-                  Hello, {username}!
-                </span>
-              </li>
-              <li className="nav-item">
-                <a href="#" id="logout-button" className="button" onClick={(e) => { e.preventDefault(); handleLogout(); }}>
-                  Logout
-                </a>
-              </li>
-            </ul>
-          </div>
-        </nav>
-      </header>
+      <Navbar
+        type="tasks" username={username} searchValue={filters.search}
+        onSearchChange={(e)=>setFilters((prev)=>({...prev,search:e.target.value}))}
+        onSearchKeyPress={handleSearchKeyPress}
+        onAddTask={()=>handleOpenAddModal(null)}
+        onLogout={handleLogout} />
 
       <main className="container" style={{ flex: '1' }}>
         {/* STATS CARDS */}
@@ -993,7 +956,6 @@ export default function Tasks() {
         </div>
       </footer>
 
-      {/* MODALS */}
       <AddTaskModal
         show={showAddModal}
         onClose={handleCloseAddModal}

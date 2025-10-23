@@ -1,6 +1,7 @@
 import "../styles/style.css";
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
+import Navbar from "../components/Navbar";
 
 export default function Index() {
   useEffect(() => {
@@ -16,19 +17,9 @@ export default function Index() {
 
   return (
     <div>
-      <header>
-        <nav className="navbar">
-          <div className="container navbar-content">
-            <a href="/" className="navbar-brand">FocusFlow</a>
-            <ul className="navbar-nav">
-              <li><a href="#features-section" className="nav-link">About Us</a></li>
-              <li><a href="#contact-section" className="nav-link">Contact Us</a></li>
-              <li><Link to="/login" className="button">Login</Link></li>
-              <li><Link to="/signup" className="button">Sign Up</Link></li>
-            </ul>
-          </div>
-        </nav>
-      </header>
+      <div>
+        <Navbar type="public" />
+      </div>
 
       <main>
         <section className="hero container">
