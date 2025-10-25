@@ -429,7 +429,7 @@ h2 {
     margin-bottom: 25px;
 }
 .close-button {
-    color: #aaa;
+    color: white;
     font-size: 28px;
     font-weight: bold;
     position: absolute;
@@ -438,11 +438,6 @@ h2 {
     cursor: pointer;
 }
 
-.close-button:hover,
-.close-button:focus {
-    color: #333;
-    text-decoration: none;
-}
 #edit-task-form .form-actions {
     display: flex;
     gap: 15px;

@@ -1,0 +1,9 @@
+.git
+.git_corrupt
+.gitignore
+notes.txt
+
+backend/**/__pycache__/
+backend/venv/
+
+FocusFlow/node_modules/
