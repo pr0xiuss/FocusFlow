@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaEye, FaEyeSlash } from "react-icons/fa"; // <- icons
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import "../styles/auth.css";
 import "../styles/style.css";
 
@@ -10,8 +10,8 @@ export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
-  const [showPassword, setShowPassword] = useState(false);   // <- toggle
-  const [showPassword2, setShowPassword2] = useState(false); // <- toggle
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword2, setShowPassword2] = useState(false);
   const [feedback, setFeedback] = useState("");
 
   const API_BASE_URL = "http://127.0.0.1:8000/api";

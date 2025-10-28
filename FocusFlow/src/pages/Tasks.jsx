@@ -3,11 +3,10 @@ import "../styles/style.css";
 import "../styles/tasks.css";
 import Navbar from "../components/Navbar";
 
-/* === BASE API === */
 const API_BASE_URL = "http://127.0.0.1:8000/api";
 
-/* === AUTH & FETCH HELPERS === */
-async function authenticatedFetch(url, options = {}) {
+//Auth
+async function authenticatedFetch(url, options = {}){
   const accessToken = localStorage.getItem("accessToken");
   if (!accessToken) return { error: "Unauthorized" };
 
@@ -20,7 +19,7 @@ async function authenticatedFetch(url, options = {}) {
   };
 
   const method = (opts.method || "GET").toUpperCase();
-  if (["POST", "PUT", "PATCH"].includes(method) && !opts.headers["Content-Type"]) {
+  if (["POST", "PUT", "PATCH"].includes(method) && !opts.headers["Content-Type"]){
     opts.headers["Content-Type"] = "application/json";
   }
 
@@ -34,6 +33,7 @@ async function authenticatedFetch(url, options = {}) {
   return res;
 }
 
+//Fetch
 async function refreshAccessToken() {
   const refresh = localStorage.getItem("refreshToken");
   if (!refresh) return false;
@@ -52,7 +52,7 @@ async function refreshAccessToken() {
   }
 }
 
-/* === API WRAPPERS === */
+//API Wrappers
 async function apiGetTasks(params = {}) {
   const sp = new URLSearchParams();
   if (params.search) sp.append("search", params.search);
@@ -152,7 +152,7 @@ async function tryReadJSON(res) {
   }
 }
 
-/* === UTILITIES === */
+//Utils
 const formatDate = (dateString) => {
   if (!dateString) return "";
   const d = new Date(dateString);
@@ -181,7 +181,7 @@ const todayStart = () => {
   return d;
 };
 
-/* === TASK CARD COMPONENT === */
+//TaksCard
 function TaskCard({
   task,
   depth = 0,
@@ -290,7 +290,7 @@ function TaskCard({
   );
 }
 
-/* === ADD TASK MODAL === */
+//Add Task
 function AddTaskModal({ show, onClose, onSubmit, parentId }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -430,7 +430,7 @@ function AddTaskModal({ show, onClose, onSubmit, parentId }) {
   );
 }
 
-/* === EDIT TASK MODAL === */
+//Edit Task
 function EditTaskModal({ show, task, onClose, onSubmit }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -562,9 +562,7 @@ function EditTaskModal({ show, task, onClose, onSubmit }) {
   );
 }
 
-/* === MAIN TASKS COMPONENT === */
 export default function Tasks() {
-  // State
   const [tasks, setTasks] = useState([]);
   const [stats, setStats] = useState({
     total_tasks: 0,
@@ -590,7 +588,6 @@ export default function Tasks() {
 
   const username = localStorage.getItem("username") || "User";
 
-  // Auth check
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
     if (!token) {
@@ -599,10 +596,8 @@ export default function Tasks() {
     }
   }, []);
 
-  // Fetch initial data
   useEffect(() => {
     fetchTasksAndStats();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchTasksAndStats = async (filterParams = null) => {
@@ -616,7 +611,7 @@ export default function Tasks() {
       setTasks(tasksData);
       setStats(statsData);
       
-      // Re-fetch subtasks for all expanded tasks
+      //Refetch subtasks for all expanded tasks
       const expandedTaskIds = Object.keys(expandedTasks).filter(
         (taskId) => expandedTasks[taskId] === true
       );
@@ -681,7 +676,7 @@ export default function Tasks() {
     try {
       const result = await apiCreateTask(payload);
       if (result.ok) {
-        // Force immediate re-fetch with current filters
+        //immediate refetch with current filters
         await fetchTasksAndStats(filters);
         return true;
       } else {
@@ -701,7 +696,6 @@ export default function Tasks() {
     try {
       const result = await apiUpdateTask(id, payload, "PUT");
       if (result.ok) {
-        // Force immediate re-fetch with current filters
         await fetchTasksAndStats(filters);
         return true;
       } else {
@@ -723,7 +717,6 @@ export default function Tasks() {
     try {
       const success = await apiDeleteTask(id);
       if (success) {
-        // Force immediate re-fetch with current filters
         await fetchTasksAndStats(filters);
       } else {
         alert("Failed to delete task.");
@@ -738,7 +731,6 @@ export default function Tasks() {
     try {
       const result = await apiUpdateTask(id, { completed: !currentCompleted }, "PATCH");
       if (result.ok) {
-        // Force immediate re-fetch with current filters
         await fetchTasksAndStats(filters);
       } else {
         const data = result.data || {};
@@ -753,7 +745,7 @@ export default function Tasks() {
 
   const handleToggleExpand = async (taskId) => {
     if (expandedTasks[taskId]) {
-      // Collapse
+      //Collapse
       setExpandedTasks((prev) => ({ ...prev, [taskId]: false }));
       setSubtasksData((prev) => {
         const newData = { ...prev };
@@ -761,7 +753,7 @@ export default function Tasks() {
         return newData;
       });
     } else {
-      // Expand - fetch subtasks
+      //Expand and fetch subtasks
       setExpandedTasks((prev) => ({ ...prev, [taskId]: true }));
       try {
         const subtasks = await apiGetSubtasks(taskId);
