@@ -10,7 +10,7 @@ class RecursiveField(serializers.Serializer):
 
 class TaskSerializer(serializers.ModelSerializer):
     has_subtasks = serializers.SerializerMethodField()
-    subtasks = RecursiveField(many=True, read_only=True)  # Added line
+    subtasks = RecursiveField(many=True, read_only=True)
 
     def get_has_subtasks(self, obj):
         return obj.subtasks.exists()

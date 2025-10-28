@@ -33,45 +33,42 @@ class TaskViewSet(viewsets.ModelViewSet):
     
     def destroy(self, request, *args, **kwargs):
         try:
-            print(f"🔍 DELETE request for task ID: {kwargs.get('pk')}")
+            print(f" DELETE request for task ID: {kwargs.get('pk')}")
             
-            # Get the task directly without going through get_queryset filters
             task = Task.objects.get(id=kwargs.get('pk'), user=request.user)
-            print(f"✅ Task found: {task.id} - {task.title}")
-            
-            # Delete it
+            print(f"Task found: {task.id} - {task.title}")  
             task.delete()
-            print("✅ Task deleted successfully from database")
+            print("Task deleted")
             
             return Response(status=status.HTTP_204_NO_CONTENT)
             
         except Task.DoesNotExist:
-            print("❌ Task not found")
+            print("Task not found")
             return Response({'detail': 'Task not found'}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
-            print(f"❌ Unexpected error: {e}")
+            print(f"Unexpected error: {e}")
             return Response({'detail': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def get_queryset(self):
-        print(f"🔍 get_queryset called for action: {getattr(self, 'action', 'unknown')}")
-        print(f"🔍 Request method: {self.request.method}")
+        print(f"get_queryset called for action: {getattr(self, 'action', 'unknown')}")
+        print(f"Request method: {self.request.method}")
         
         queryset = Task.objects.filter(user=self.request.user)
-        print(f"🔍 Base queryset count: {queryset.count()}")
+        print(f"Base queryset count: {queryset.count()}")
         
-        # Only apply parent filtering for LIST operations
+        # parent filtering
         if getattr(self, 'action', None) == 'list':
             parent_param = self.request.query_params.get('parent_task', None)
-            print(f"🔍 Parent param: {parent_param}")
+            print(f"Parent param: {parent_param}")
             
             if parent_param is None:
                 queryset = queryset.filter(parent_task__isnull=True)
-                print(f"🔍 After parent null filter: {queryset.count()}")
+                print(f"After parent null filter: {queryset.count()}")
             else:
                 queryset = queryset.filter(parent_task_id=parent_param)
-                print(f"🔍 After parent ID filter: {queryset.count()}")
+                print(f"After parent ID filter: {queryset.count()}")
 
-        # filtering (completed, category, search) and sorting logic stays same
+        # filtering (completed, category, search) and sorting
         completed_param = self.request.query_params.get('completed')
         category_param = self.request.query_params.get('category')
         search_param = self.request.query_params.get('search')
@@ -97,7 +94,7 @@ class TaskViewSet(viewsets.ModelViewSet):
         else:
             queryset = queryset.order_by('-created_at', 'id')
 
-        print(f"🔍 Final queryset count: {queryset.count()}")
+        print(f"Final queryset count: {queryset.count()}")
         return queryset
     
     def perform_create(self, serializer):
