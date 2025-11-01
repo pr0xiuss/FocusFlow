@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',         
     'rest_framework_simplejwt', # JWT
     'corsheaders',            # CORS
-    'tasks', 
+    'task', 
     'focusflow',
     # 'django_elasticsearch_dsl',
 ]
