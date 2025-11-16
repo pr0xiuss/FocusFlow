@@ -293,6 +293,14 @@ function AddTaskModal({ show, onClose, onSubmit, parentId }) {
   const [category, setCategory] = useState("");
   const [feedback, setFeedback] = useState("");
 
+  const getTodayDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
   useEffect(() => {
     if (show) {
       setTitle("");
@@ -386,6 +394,7 @@ function AddTaskModal({ show, onClose, onSubmit, parentId }) {
                 name="due_date"
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
+                min={getTodayDate()}
               />
             </div>
 
@@ -432,6 +441,14 @@ function EditTaskModal({ show, task, onClose, onSubmit }) {
   const [dueDate, setDueDate] = useState("");
   const [category, setCategory] = useState("");
   const [feedback, setFeedback] = useState("");
+
+  const getTodayDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
 
   useEffect(() => {
     if (task) {
@@ -516,6 +533,7 @@ function EditTaskModal({ show, task, onClose, onSubmit }) {
                 name="due_date"
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
+                min={getTodayDate()}
               />
             </div>
 
@@ -580,6 +598,8 @@ export default function Tasks() {
 
   const [expandedTasks, setExpandedTasks] = useState({});
   const [subtasksData, setSubtasksData] = useState({});
+
+   const [userProfilePic, setUserProfilePic] = useState("");
 
   const username = localStorage.getItem("username") || "User";
 
@@ -790,7 +810,7 @@ export default function Tasks() {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("username");
-    window.location.href = "/";
+    window.location.replace("/");
   };
 
   const handleSearchKeyPress = (e) => {
@@ -799,10 +819,27 @@ export default function Tasks() {
     }
   };
 
+  useEffect(() => {
+    fetchTasksAndStats();
+    fetchUserProfile();
+  }, []);
+
+  const fetchUserProfile = async () => {
+    try {
+      const res = await authenticatedFetch(`${API_BASE_URL}/profile/`);
+      if (res.ok) {
+        const data = await res.json();
+        setUserProfilePic(data.profile_picture || "https://res.cloudinary.com/dciud6yuq/image/upload/v1744963258/pfp_kniw7o.jpg");
+      }
+    } catch (err) {
+      console.error("Error fetching profile:", err);
+    }
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Navbar
-        type="tasks" username={username} searchValue={filters.search}
+        type="tasks" username={username} userProfilePic={userProfilePic} searchValue={filters.search}
         onSearchChange={(e)=>setFilters((prev)=>({...prev,search:e.target.value}))}
         onSearchKeyPress={handleSearchKeyPress}
         onAddTask={()=>handleOpenAddModal(null)}

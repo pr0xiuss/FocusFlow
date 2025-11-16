@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import "../styles/style.css";
 import "../styles/tasks.css";
 import "../styles/profile.css";
 
 const API_BASE_URL = "http://127.0.0.1:8000/api";
 
-// Auth fetch helper
+//Auth
 async function authenticatedFetch(url, options = {}) {
   const accessToken = localStorage.getItem("accessToken");
   if (!accessToken) return { error: "Unauthorized" };
@@ -24,7 +25,7 @@ async function authenticatedFetch(url, options = {}) {
   }
 
   let res = await fetch(url, opts);
-  if (res.status === 401) {
+  if (res.status === 401 || res.status === 403) {
     const refreshed = await refreshAccessToken();
     if (!refreshed) return { error: "Session expired" };
     opts.headers["Authorization"] = `Bearer ${localStorage.getItem("accessToken")}`;
@@ -65,14 +66,16 @@ export default function Profile() {
   });
   const [loading, setLoading] = useState(true);
 
-  // Modal states
   const [showEditPicModal, setShowEditPicModal] = useState(false);
   const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
   const [showDeleteAccountModal, setShowDeleteAccountModal] = useState(false);
 
+  const [showAllCompleted, setShowAllCompleted] = useState(false);
+  const [showAllCreated, setShowAllCreated] = useState(false);
+
   const username = localStorage.getItem("username") || "User";
 
-  // Auth check
+  //Auth check
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
     if (!token) {
@@ -116,7 +119,7 @@ export default function Profile() {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("username");
-    window.location.href = "/";
+    window.location.replace("/");
   };
 
   const formatDate = (dateString) => {
@@ -143,11 +146,6 @@ export default function Profile() {
   if (loading) {
     return (
       <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-        <div style={{ padding: "20px", textAlign: "center", backgroundColor: "#f7f9fc" }}>
-          <a href="/tasks" className="button" style={{ display: "inline-block" }}>
-            ← Back to Tasks
-          </a>
-        </div>
         <main className="container" style={{ flex: "1" }}>
           <p className="loading-message">Loading profile...</p>
         </main>
@@ -162,15 +160,9 @@ export default function Profile() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-      {/* Back to Tasks Link */}
-      <div style={{ padding: "20px", textAlign: "center", backgroundColor: "#f7f9fc" }}>
-        <a href="/tasks" className="button" style={{ display: "inline-block" }}>
-          ← Back to Tasks
-        </a>
-      </div>
 
       <main className="container profile-container" style={{ flex: "1" }}>
-        {/* Profile Header Section */}
+
         <section className="profile-header-section">
           <div className="profile-pic-container">
             <img src={profile?.profile_picture || "https://res.cloudinary.com/dciud6yuq/image/upload/v1744963258/pfp_kniw7o.jpg"}
@@ -192,9 +184,14 @@ export default function Profile() {
               Member since {formatMemberSince(profile?.member_since)}
             </p>
           </div>
+          <div className="profile-back-button">
+          <a href="/tasks" className="button">
+            ← Back to Tasks
+          </a>
+        </div>
         </section>
 
-        {/* Task Statistics Section */}
+        
         <section className="stats-cards-section">
           <h2>Task Statistics</h2>
           <div className="stats-grid">
@@ -229,24 +226,46 @@ export default function Profile() {
           </div>
         </section>
 
-        {/* Recent Activity Section */}
+        
         <section className="recent-activity-section">
           <h2>Recent Activity</h2>
           
           <div className="activity-group">
             <h3>Recently Completed</h3>
             {recentActivity.recently_completed.length > 0 ? (
-              <ul className="activity-list">
-                {recentActivity.recently_completed.map((task) => (
-                  <li key={task.id} className="activity-item completed">
-                    <span className="activity-icon">✅</span>
-                    <span className="activity-text">{task.title}</span>
-                    <span className="activity-time">
-                      {formatDate(task.updated_at)}
-                    </span>
-                  </li>
-                ))}
-              </ul>
+              <>
+                <ul className="activity-list">
+                  {(showAllCompleted 
+                    ? recentActivity.recently_completed 
+                    : recentActivity.recently_completed.slice(0, 5)
+                  ).map((task) => (
+                    <li key={task.id} className="activity-item completed">
+                      <span className="activity-icon">✅</span>
+                      <span className="activity-text">{task.title}</span>
+                      <span className="activity-time">
+                        {formatDate(task.updated_at)}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+                {recentActivity.recently_completed.length > 5 && (
+                  <button
+                    className="button secondary"
+                    style={{
+                      width: "100%",
+                      marginTop: "10px",
+                      padding: "10px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "5px"
+                    }}
+                    onClick={() => setShowAllCompleted(!showAllCompleted)}
+                  >
+                    {showAllCompleted ? "Show Less ▲" : `Show More (${recentActivity.recently_completed.length - 5} more) ▼`}
+                  </button>
+                )}
+              </>
             ) : (
               <p className="no-activity">No recently completed tasks</p>
             )}
@@ -255,46 +274,68 @@ export default function Profile() {
           <div className="activity-group">
             <h3>Recently Created</h3>
             {recentActivity.recently_created.length > 0 ? (
-              <ul className="activity-list">
-                {recentActivity.recently_created.map((task) => (
-                  <li key={task.id} className="activity-item created">
-                    <span className="activity-icon">📝</span>
-                    <span className="activity-text">{task.title}</span>
-                    <span className="activity-time">
-                      {formatDate(task.created_at)}
-                    </span>
-                  </li>
-                ))}
-              </ul>
+              <>
+                <ul className="activity-list">
+                  {(showAllCreated 
+                    ? recentActivity.recently_created 
+                    : recentActivity.recently_created.slice(0, 5)
+                  ).map((task) => (
+                    <li key={task.id} className="activity-item created">
+                      <span className="activity-icon">📝</span>
+                      <span className="activity-text">{task.title}</span>
+                      <span className="activity-time">
+                        {formatDate(task.created_at)}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+                {recentActivity.recently_created.length > 5 && (
+                  <button
+                    className="button secondary"
+                    style={{
+                      width: "100%",
+                      marginTop: "10px",
+                      padding: "10px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "5px"
+                    }}
+                    onClick={() => setShowAllCreated(!showAllCreated)}
+                  >
+                    {showAllCreated ? "Show Less ▲" : `Show More (${recentActivity.recently_created.length - 5} more) ▼`}
+                  </button>
+                )}
+              </>
             ) : (
               <p className="no-activity">No recently created tasks</p>
             )}
           </div>
         </section>
 
-        {/* Settings Section */}
+       
         <section className="settings-section">
           <h2>Settings</h2>
           <button
             className="button settings-button"
             onClick={() => setShowChangePasswordModal(true)}
           >
-            🔒 Change Password
+            Change Password
           </button>
         </section>
 
-        {/* Account Actions Section */}
+        
         <section className="account-actions-section">
           <h2>Account Actions</h2>
           <div className="account-actions-buttons">
             <button className="button" onClick={handleLogout}>
-              🚪 Logout
+               Logout
             </button>
             <button
               className="button danger-button"
               onClick={() => setShowDeleteAccountModal(true)}
             >
-              🗑️ Delete Account
+               Delete Account
             </button>
           </div>
         </section>
@@ -306,7 +347,7 @@ export default function Profile() {
         </div>
       </footer>
 
-      {/* Modals */}
+     
       <EditPictureModal
         show={showEditPicModal}
         onClose={() => setShowEditPicModal(false)}
@@ -327,9 +368,7 @@ export default function Profile() {
 }
 
 
-/* ============ MODAL COMPONENTS ============ */
-
-// Edit Picture Modal
+//Edit pic
 function EditPictureModal({ show, onClose, onSuccess }) {
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
@@ -366,13 +405,11 @@ function EditPictureModal({ show, onClose, onSuccess }) {
   };
 
   const processFile = (file) => {
-    // Validate file type
     if (!file.type.startsWith("image/")) {
       setFeedback("Please select an image file");
       return;
     }
 
-    // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
       setFeedback("Image size should be less than 5MB");
       return;
@@ -505,13 +542,15 @@ function EditPictureModal({ show, onClose, onSuccess }) {
 }
 
 
-// Change Password Modal
+//Change pass
 function ChangePasswordModal({ show, onClose }) {
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [feedback, setFeedback] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showNewPass, setShowNewPass] = useState(false);
+  const [showConfirmPass, setShowConfirmPass] = useState(false);
 
   useEffect(() => {
     if (show) {
@@ -530,17 +569,14 @@ function ChangePasswordModal({ show, onClose }) {
     e.preventDefault();
     setFeedback("");
 
-    // Validation
     if (!oldPassword || !newPassword || !confirmPassword) {
       setFeedback("All fields are required");
       return;
     }
-
     if (newPassword !== confirmPassword) {
       setFeedback("New passwords don't match");
       return;
     }
-
     if (newPassword.length < 6) {
       setFeedback("Password must be at least 6 characters long");
       return;
@@ -565,9 +601,7 @@ function ChangePasswordModal({ show, onClose }) {
 
       if (res.ok) {
         setFeedback("Password changed successfully!");
-        setTimeout(() => {
-          onClose();
-        }, 1500);
+        setTimeout(() => onClose(), 1500);
       } else {
         const error = await res.json();
         setFeedback(error.error || error.detail || "Failed to change password");
@@ -588,13 +622,14 @@ function ChangePasswordModal({ show, onClose }) {
         <span className="close-button" onClick={onClose}>
           &times;
         </span>
+
         <h3>Change Password</h3>
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="old-password">Current Password</label>
             <input
-              type="password"
+              type="text"
               id="old-password"
               placeholder="Enter current password"
               value={oldPassword}
@@ -603,28 +638,52 @@ function ChangePasswordModal({ show, onClose }) {
             />
           </div>
 
-          <div className="form-group">
+          <div className="form-group" style={{ position: "relative" }}>
             <label htmlFor="new-password">New Password</label>
             <input
-              type="password"
+              type={showNewPass ? "text" : "password"}
               id="new-password"
               placeholder="Enter new password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               required
             />
+
+            <span
+              onClick={() => setShowNewPass(!showNewPass)}
+              style={{
+                position: "absolute",
+                right: "12px",
+                top: "50px",
+                cursor: "pointer",
+              }}
+            >
+              {showNewPass ? <FaEye />:<FaEyeSlash />}
+            </span>
           </div>
 
-          <div className="form-group">
+          <div className="form-group" style={{ position: "relative" }}>
             <label htmlFor="confirm-password">Confirm New Password</label>
             <input
-              type="password"
+              type={showConfirmPass ? "text" : "password"}
               id="confirm-password"
               placeholder="Re-enter new password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
             />
+
+            <span
+              onClick={() => setShowConfirmPass(!showConfirmPass)}
+              style={{
+                position: "absolute",
+                right: "12px",
+                top: "50px",
+                cursor: "pointer",
+              }}
+            >
+              {showConfirmPass ? <FaEye />:<FaEyeSlash />}
+            </span>
           </div>
 
           {feedback && (
@@ -660,7 +719,8 @@ function ChangePasswordModal({ show, onClose }) {
 }
 
 
-// Delete Account Modal
+
+//Delete acc
 function DeleteAccountModal({ show, onClose }) {
   const [confirmText, setConfirmText] = useState("");
   const [feedback, setFeedback] = useState("");

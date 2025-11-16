@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 export default function Navbar({ 
   type = "public",
   username = "",
+  userProfilePic = "",
   searchValue = "",
   onSearchChange = () => {},
   onSearchKeyPress = () => {},
@@ -59,6 +60,13 @@ export default function Navbar({
                   Logout
                 </a>
               </li>
+              <li className="nav-item">
+                <Link to="/profile">
+                  <img src={userProfilePic || "https://res.cloudinary.com/dciud6yuq/image/upload/v1744963258/pfp_kniw7o.jpg"}
+                    alt="Profile" className="navbar-profile-pic"
+                  />
+              </Link>
+            </li>
             </ul>
           </div>
         </nav>

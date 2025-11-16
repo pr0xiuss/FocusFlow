@@ -1,10 +1,7 @@
-/* ============ PROFILE PAGE STYLES ============ */
-
 .profile-container {
   padding: 40px 20px;
 }
 
-/* Profile Header Section */
 .profile-header-section {
   background-color: white;
   padding: 40px;
@@ -40,6 +37,7 @@
 
 .profile-info {
   flex: 1;
+  margin-left: 50px;
 }
 
 .profile-username {
@@ -60,7 +58,10 @@
   font-style: italic;
 }
 
-/* Recent Activity Section */
+.profile-back-button{
+    margin-top: 150px;
+}
+
 .recent-activity-section {
   background-color: white;
   padding: 30px;
@@ -142,7 +143,6 @@
   border-radius: 8px;
 }
 
-/* Settings Section */
 .settings-section {
   background-color: white;
   padding: 30px;
@@ -169,7 +169,6 @@
   gap: 10px;
 }
 
-/* Account Actions Section */
 .account-actions-section {
   background-color: white;
   padding: 30px;
@@ -209,9 +208,19 @@
   background-color: #c82333;
 }
 
-/* Profile Modals */
 .profile-modal-content {
   max-width: 500px;
+}
+
+.profile-modal-content input {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 1rem; 
+  border-radius: 8px; 
+  border: 1px solid #ccc;
+  margin-top: 6px;
+  margin-bottom: 15px;
+  box-sizing: border-box;
 }
 
 .upload-area {
@@ -306,7 +315,6 @@
   text-align: center;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
   .profile-header-section {
     flex-direction: column;
@@ -325,4 +333,17 @@
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+}
+
+.activity-list {
+  transition: max-height 0.3s ease;
+}
+
+.show-more-button {
+  transition: all 0.2s ease;
+}
+
+.show-more-button:hover {
+  background-color: #357ABD;
+  color: white;
 }

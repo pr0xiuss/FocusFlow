@@ -124,8 +124,6 @@ class UserRegistrationView(generics.CreateAPIView):
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
 
-
-# ============ PROFILE VIEWS ============
 @api_view(['GET', 'PUT'])
 @permission_classes([IsAuthenticated])
 def user_profile(request):
@@ -163,14 +161,12 @@ def change_password(request):
     if serializer.is_valid():
         user = request.user
         
-        # Check old password
         if not user.check_password(serializer.validated_data['old_password']):
             return Response(
                 {'error': 'Current password is incorrect'}, 
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        # Set new password
         user.set_password(serializer.validated_data['new_password'])
         user.save()
         
@@ -188,7 +184,6 @@ def delete_account(request):
     user = request.user
     username = user.username
     
-    # Delete user (cascades to profile and tasks)
     user.delete()
     
     return Response(
@@ -205,16 +200,14 @@ def recent_activity(request):
     """
     user = request.user
     
-    # Recently completed tasks (last 5)
     recently_completed = Task.objects.filter(
         user=user, 
         completed=True
-    ).order_by('-updated_at')[:5]
+    ).order_by('-updated_at')[:20]
     
-    # Recently created tasks (last 5)
     recently_created = Task.objects.filter(
         user=user
-    ).order_by('-created_at')[:5]
+    ).order_by('-created_at')[:20]
     
     return Response({
         'recently_completed': TaskSerializer(recently_completed, many=True).data,
