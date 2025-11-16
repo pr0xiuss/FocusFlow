@@ -1,0 +1,328 @@
+/* ============ PROFILE PAGE STYLES ============ */
+
+.profile-container {
+  padding: 40px 20px;
+}
+
+/* Profile Header Section */
+.profile-header-section {
+  background-color: white;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin-bottom: 30px;
+  display: flex;
+  gap: 40px;
+  align-items: center;
+}
+
+.profile-pic-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.profile-picture {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #4A90E2;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.edit-pic-button {
+  padding: 8px 20px;
+  font-size: 0.9em;
+  white-space: nowrap;
+}
+
+.profile-info {
+  flex: 1;
+}
+
+.profile-username {
+  font-size: 2.5em;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.profile-email {
+  font-size: 1.2em;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.profile-member-since {
+  font-size: 1em;
+  color: #888;
+  font-style: italic;
+}
+
+/* Recent Activity Section */
+.recent-activity-section {
+  background-color: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin-bottom: 30px;
+}
+
+.recent-activity-section h2 {
+  font-size: 1.8em;
+  color: #333;
+  margin-bottom: 25px;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+}
+
+.activity-group {
+  margin-bottom: 30px;
+}
+
+.activity-group h3 {
+  font-size: 1.3em;
+  color: #4A90E2;
+  margin-bottom: 15px;
+}
+
+.activity-list {
+  list-style: none;
+  padding: 0;
+}
+
+.activity-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  transition: transform 0.2s ease;
+}
+
+.activity-item:hover {
+  transform: translateX(5px);
+  background-color: #f0f0f0;
+}
+
+.activity-item.completed {
+  border-left: 4px solid #28a745;
+}
+
+.activity-item.created {
+  border-left: 4px solid #4A90E2;
+}
+
+.activity-icon {
+  font-size: 1.5em;
+  flex-shrink: 0;
+}
+
+.activity-text {
+  flex: 1;
+  font-size: 1.1em;
+  color: #333;
+}
+
+.activity-time {
+  font-size: 0.9em;
+  color: #888;
+  white-space: nowrap;
+}
+
+.no-activity {
+  text-align: center;
+  color: #999;
+  font-style: italic;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+/* Settings Section */
+.settings-section {
+  background-color: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin-bottom: 30px;
+}
+
+.settings-section h2 {
+  font-size: 1.8em;
+  color: #333;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+}
+
+.settings-button {
+  width: 100%;
+  padding: 15px 20px;
+  font-size: 1.1em;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Account Actions Section */
+.account-actions-section {
+  background-color: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin-bottom: 30px;
+}
+
+.account-actions-section h2 {
+  font-size: 1.8em;
+  color: #333;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+}
+
+.account-actions-buttons {
+  display: flex;
+  gap: 20px;
+}
+
+.account-actions-buttons .button {
+  flex: 1;
+  padding: 15px 20px;
+  font-size: 1.1em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.danger-button {
+  background-color: #dc3545;
+}
+
+.danger-button:hover {
+  background-color: #c82333;
+}
+
+/* Profile Modals */
+.profile-modal-content {
+  max-width: 500px;
+}
+
+.upload-area {
+  border: 2px dashed #4A90E2;
+  border-radius: 8px;
+  padding: 40px;
+  text-align: center;
+  background-color: #f8f9fa;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
+}
+
+.upload-area:hover {
+  border-color: #357ABD;
+  background-color: #e7f3ff;
+}
+
+.upload-area.drag-over {
+  border-color: #28a745;
+  background-color: #d4edda;
+}
+
+.upload-icon {
+  font-size: 3em;
+  color: #4A90E2;
+  margin-bottom: 15px;
+}
+
+.upload-text {
+  font-size: 1.1em;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.upload-hint {
+  font-size: 0.9em;
+  color: #999;
+}
+
+.file-input {
+  display: none;
+}
+
+.preview-container {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.preview-image {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #4A90E2;
+  margin-bottom: 15px;
+}
+
+.change-image-button {
+  padding: 8px 20px;
+  font-size: 0.9em;
+}
+
+.delete-confirmation {
+  background-color: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.delete-confirmation p {
+  color: #856404;
+  font-size: 1.1em;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+.delete-confirmation input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #ffc107;
+  border-radius: 5px;
+  font-size: 1em;
+  margin-bottom: 10px;
+}
+
+.delete-warning {
+  font-size: 0.9em;
+  color: #dc3545;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .profile-header-section {
+    flex-direction: column;
+    text-align: center;
+    padding: 30px 20px;
+  }
+
+  .profile-username {
+    font-size: 2em;
+  }
+
+  .account-actions-buttons {
+    flex-direction: column;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

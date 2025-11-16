@@ -3,6 +3,7 @@ import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Tasks from "./pages/Tasks";
+import Profile from './pages/Profile';
 
 function App() {
   return (
@@ -11,7 +12,8 @@ function App() {
         <Route path="/" element={<Index />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/tasks" element={<Tasks />} /> 
+        <Route path="/tasks" element={<Tasks />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
     </BrowserRouter>
   );

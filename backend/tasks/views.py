@@ -1,12 +1,12 @@
 from rest_framework import viewsets, generics
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.utils import timezone
-from .models import Task
-from .serializers import TaskSerializer, UserSerializer
+from .models import Task, UserProfile
+from .serializers import TaskSerializer, UserSerializer, UserProfileSerializer, ChangePasswordSerializer
 from rest_framework import status
 
 class TaskViewSet(viewsets.ModelViewSet):
@@ -123,3 +123,100 @@ class UserRegistrationView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
+
+
+# ============ PROFILE VIEWS ============
+@api_view(['GET', 'PUT'])
+@permission_classes([IsAuthenticated])
+def user_profile(request):
+    """
+    GET: Retrieve user profile
+    PUT: Update profile picture
+    """
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
+    
+    if request.method == 'GET':
+        serializer = UserProfileSerializer(profile)
+        return Response(serializer.data)
+    
+    elif request.method == 'PUT':
+        if 'profile_picture' in request.FILES:
+            profile.profile_picture = request.FILES['profile_picture']
+            profile.save()
+            serializer = UserProfileSerializer(profile)
+            return Response(serializer.data)
+        else:
+            return Response(
+                {'error': 'No image file provided'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def change_password(request):
+    """
+    Change user password
+    """
+    serializer = ChangePasswordSerializer(data=request.data)
+    
+    if serializer.is_valid():
+        user = request.user
+        
+        # Check old password
+        if not user.check_password(serializer.validated_data['old_password']):
+            return Response(
+                {'error': 'Current password is incorrect'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Set new password
+        user.set_password(serializer.validated_data['new_password'])
+        user.save()
+        
+        return Response({'message': 'Password changed successfully'})
+    
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_account(request):
+    """
+    Delete user account and all related data
+    """
+    user = request.user
+    username = user.username
+    
+    # Delete user (cascades to profile and tasks)
+    user.delete()
+    
+    return Response(
+        {'message': f'Account {username} has been deleted successfully'}, 
+        status=status.HTTP_200_OK
+    )
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def recent_activity(request):
+    """
+    Get recently completed and created tasks
+    """
+    user = request.user
+    
+    # Recently completed tasks (last 5)
+    recently_completed = Task.objects.filter(
+        user=user, 
+        completed=True
+    ).order_by('-updated_at')[:5]
+    
+    # Recently created tasks (last 5)
+    recently_created = Task.objects.filter(
+        user=user
+    ).order_by('-created_at')[:5]
+    
+    return Response({
+        'recently_completed': TaskSerializer(recently_completed, many=True).data,
+        'recently_created': TaskSerializer(recently_created, many=True).data
+    })
