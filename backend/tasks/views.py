@@ -112,7 +112,7 @@ class TaskViewSet(viewsets.ModelViewSet):
         return Response(data)
 
     @action(detail=True,methods=['get'])
-    def subtasks(self,request,pk=None):
+    def subtasks(self,request,pk=None):     
         parent_task =self.get_object()
         subtasks = parent_task.subtasks.filter(user=request.user).order_by('id')
         serializer = self.get_serializer(subtasks, many=True)

@@ -128,10 +128,6 @@ async function apiDeleteTask(id) {
       return true;
     }
 
-    if (res.status === 500) {
-      return true;
-    }
-
     if (res.status >= 400 && res.status !== 404) {
       const errorData = await tryReadJSON(res);
       throw new Error(`Delete failed: ${res.status} ${errorData.detail || "Unknown error"}`);
@@ -151,7 +147,6 @@ async function tryReadJSON(res) {
     return { detail: "Unknown error" };
   }
 }
-
 //Utils
 const formatDate = (dateString) => {
   if (!dateString) return "";

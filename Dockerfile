@@ -5,7 +5,7 @@ WORKDIR /app/frontend
 
 COPY FocusFlow/package*.json ./
 RUN npm install
-
+    
 COPY FocusFlow/ ./
 RUN npm run build
 
