@@ -611,10 +611,6 @@ export default function Tasks() {
     }
   }, []);
 
-  useEffect(() => {
-    fetchTasksAndStats();
-  }, []);
-
   const fetchTasksAndStats = async (filterParams = null) => {
     setLoading(true);
     try {

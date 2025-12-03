@@ -26,7 +26,6 @@ class Task(models.Model):
         return depth
 
 
-# ============ PROFILE MODEL ============
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     profile_picture = CloudinaryField(
@@ -41,7 +40,7 @@ class UserProfile(models.Model):
         return f"{self.user.username}'s profile"
 
 
-# Signal to auto-create profile when user is created
+#autocreate profile
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 

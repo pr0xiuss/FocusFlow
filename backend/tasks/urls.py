@@ -9,7 +9,6 @@ urlpatterns = [
     path('', include(router.urls)),
     path('register/', UserRegistrationView.as_view(), name='user-register'),
     
-    # Profile routes
     path('profile/', user_profile, name='user-profile'),
     path('profile/change-password/', change_password, name='change-password'),
     path('profile/delete-account/', delete_account, name='delete-account'),
